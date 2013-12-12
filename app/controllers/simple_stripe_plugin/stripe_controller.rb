@@ -5,7 +5,9 @@ module SimpleStripePlugin
     def charge
       # Set your secret key: remember to change this to your live secret key in production
       # See your keys here https://manage.stripe.com/account
-      Stripe.api_key = "sk_test_rVS3V1DCFTmn6XJ7OSkSyguR"
+      puts Engine.plugin_object.config
+      puts Engine.plugin_object.config['stripe_secret']
+      Stripe.api_key = Engine.plugin_object.config['stripe_secret']
 
       # Get the credit card details submitted by the form
       token = params[:stripeToken]
