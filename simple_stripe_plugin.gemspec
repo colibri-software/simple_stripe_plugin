@@ -10,9 +10,9 @@ Gem::Specification.new do |s|
   s.version     = SimpleStripePlugin::VERSION
   s.authors     = ["Charlie Greene"]
   s.email       = ["charlie@colibri-software.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of SimpleStripePlugin."
-  s.description = "TODO: Description of SimpleStripePlugin."
+  s.homepage    = "https://www.colibri-software.com"
+  s.summary     = "Stripe plugin to perform a charge"
+  s.description = "Stripe plugin to perform a charge"
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
 
