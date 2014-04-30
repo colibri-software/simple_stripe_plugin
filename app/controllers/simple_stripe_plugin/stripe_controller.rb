@@ -12,7 +12,7 @@ module SimpleStripePlugin
       # Get the credit card details submitted by the form
       token = params[:stripeToken]
       amount = params[:amount].to_f * 100
-      description = params[:name] + " for " + params[:period]
+      description = params[:name] + " for " + params[:id_number]
 
       @response = {}
 
