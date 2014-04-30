@@ -1,8 +1,11 @@
 require "simple_stripe_plugin/engine"
+require "simple_stripe_plugin/javascript"
 
 module SimpleStripePlugin
   class SimpleStripePlugin
     include Locomotive::Plugin
+
+    before_page_render :set_config
 
     def self.default_plugin_id
       'stripe'
@@ -16,5 +19,13 @@ module SimpleStripePlugin
       File.join(File.dirname(__FILE__), 'simple_stripe_plugin', 'config.html')
     end
 
+    def self.liquid_tags
+      {
+        javascript: JavaScript
+      }
+    end
+    def set_config
+      mounted_rack_app.config = config
+    end
   end
 end
