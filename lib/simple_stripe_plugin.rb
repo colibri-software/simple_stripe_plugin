@@ -1,6 +1,7 @@
 require "simple_stripe_plugin/engine"
 require "simple_stripe_plugin/javascript"
 require "simple_stripe_plugin/form"
+require "simple_stripe_plugin/block_form"
 require "simple_stripe_plugin/fields"
 
 module SimpleStripePlugin
@@ -26,6 +27,7 @@ module SimpleStripePlugin
         javascript: JavaScript,
         form: Form,
         fields: Fields,
+        form_block: BlockForm
       }
     end
     def set_config
