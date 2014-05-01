@@ -1,3 +1,3 @@
 <div id="payment-form">
   <span id="payment-errors"></span>
-  <form action="/locomotive/plugins/stripe/charge" method="POST" id="payment-form">
+  <form action="/locomotive/plugins/stripe/charge<% if @options[:submit_model]%>?model_slug=<%= @options[:submit_model]%><% end%>" method="POST" id="payment-form">

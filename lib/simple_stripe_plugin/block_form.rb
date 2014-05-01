@@ -5,6 +5,7 @@ module SimpleStripePlugin
 
     def initialize(tag_name, markup, tokens, context)
       @options = {
+        submit_model: nil
       }
       markup.scan(::Liquid::TagAttributes) { |key, value| @options[key.to_sym] = value.gsub(/"|'/, '') }
       super
