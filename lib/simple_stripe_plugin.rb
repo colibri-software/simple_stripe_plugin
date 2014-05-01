@@ -1,6 +1,7 @@
 require "simple_stripe_plugin/engine"
 require "simple_stripe_plugin/javascript"
 require "simple_stripe_plugin/form"
+require "simple_stripe_plugin/fields"
 
 module SimpleStripePlugin
   class SimpleStripePlugin
@@ -23,7 +24,8 @@ module SimpleStripePlugin
     def self.liquid_tags
       {
         javascript: JavaScript,
-        form: Form
+        form: Form,
+        fields: Fields,
       }
     end
     def set_config

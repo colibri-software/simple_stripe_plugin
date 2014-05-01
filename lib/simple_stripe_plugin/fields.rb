@@ -1,7 +1,7 @@
 require 'erb'
 
 module SimpleStripePlugin
-  class Form < ::Liquid::Tag
+  class Fields < ::Liquid::Tag
 
     def initialize(tag_name, markup, tokens, context)
       @options = {
@@ -18,10 +18,7 @@ module SimpleStripePlugin
     end
 
     def render(context)
-      form_start = ERB.new(File.read(File.join(File.dirname(__FILE__), 'form_start.erb'))).result binding
-      fields = ERB.new(File.read(File.join(File.dirname(__FILE__), 'fields.erb'))).result binding
-      form_end = ERB.new(File.read(File.join(File.dirname(__FILE__), 'form_end.erb'))).result binding
-      return form_start + fields + form_end
+      ERB.new(File.read(File.join(File.dirname(__FILE__), 'fields.erb'))).result binding
     end
   end
 end
