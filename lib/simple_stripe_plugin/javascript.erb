@@ -4,17 +4,16 @@
   Stripe.setPublishableKey('<%= @options[:public_key] %>');
   // Create token
   jQuery(function($) {
-    $('#<%= @options[:form_id] %>').submit(function(event) {
+    $('form#<%= @options[:form_id] %>').submit(function(event) {
       var $form = $(this);
-      // Disable the submit button to prevent repeated clicks
+      event.preventDefault();
       $form.find('input[type=submit]').prop('disabled', true);
       Stripe.card.createToken($form, stripeResponseHandler);
-      // Prevent the form from submitting with the default action
       return false;
     });
   });
   var stripeResponseHandler = function(status, response) {
-    var $form = $('#<%= @options[:form_id] %>');
+    var $form = $('form#<%= @options[:form_id] %>');
     if (response.error) {
       // Show the errors on the form
       $('#<%= @options[:errors_id] %>').text(response.error.message);
@@ -29,10 +28,12 @@
     }
   };
   var serverResponseHandler = function(data, textStatus, jqXHR) {
-    var $form = $('#<%= @options[:form_id] %>');
-    $form.find('button').prop('disabled', false);
-    if (data.error) {
-      $form.find('#<%= @options[:errors_id] %>').text(data.error.message);
+    var $form = $('form#<%= @options[:form_id] %>');
+    $form.find('input[type=submit]').prop('disabled', false);
+    if (data.model.error) {
+      $('#<%= @options[:errors_id] %>').text(data.model.error.message);
+    } else if (data.charge.error) {
+      $('#<%= @options[:errors_id] %>').text(data.model.error.message);
     } else {
       alert('<%= @options[:success_message] %>');
       $form.trigger("reset");
