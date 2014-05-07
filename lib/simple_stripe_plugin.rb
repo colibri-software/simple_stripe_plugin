@@ -9,6 +9,7 @@ module SimpleStripePlugin
     include Locomotive::Plugin
 
     before_page_render :set_config
+    before_rack_app_request :set_config
 
     def self.default_plugin_id
       'stripe'
@@ -31,7 +32,7 @@ module SimpleStripePlugin
       }
     end
     def set_config
-      mounted_rack_app.config = config
+      Engine.config = config
     end
   end
 end
