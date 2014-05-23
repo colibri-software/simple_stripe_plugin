@@ -12,7 +12,15 @@ module SimpleStripePlugin
       amount = (params[:amount].to_f * 100).to_i
       name = params[:name]
       number = params[:id_number]
-      description = name + " for " + number
+      if name && number
+        description = name + " for " + number
+      elsif name && !number
+        description = name
+      elsif !name && number
+        description = number
+      else
+        description = ""
+      end
 
       #Create a model entry if one was passed in
       payment_slug = config[:payment_model]
