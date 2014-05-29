@@ -1,3 +1,31 @@
+<% if Engine.config[:allow_offline] %>
+  <div class="row">
+    <div class="columns large-24">
+      <label for="payment-type">Payment Type</label>
+      <div class="row">
+        <div class="columns large-12">
+          <input type="radio" name="payment_type" id="payment_type_stripe" value="stripe" checked>Stripe Payment
+        </div>
+        <div class="columns large-12">
+          <input type="radio" name="payment_type" id="payment_type_offline" value="offline">Pay in Person
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    var stripe = document.getElementById('payment_type_stripe')
+    var offline = document.getElementById('payment_type_offline')
+    stripe.onchange = function() {
+      var fields = document.getElementById('stripe-payment-fields')
+      fields.style.display = "block"
+    }
+    offline.onchange = function() {
+      var fields = document.getElementById('stripe-payment-fields')
+      fields.style.display = "none"
+    }
+
+  </script>
+<% end %>
 <div class="row">
   <div class="columns large-24">
     <label for="name"><%= @options[:name_label]%></label>
@@ -14,27 +42,29 @@
     <input type="text" name="amount" id="amount">
   </div>
 </div>
-<div class="row">
-  <div class="columns large-24">
-    <label for="number"><%= @options[:number_label] %></label>
-    <input type="text" data-stripe="number" id="number">
-  </div>
-</div>
-<div class="row">
-  <div class="columns large-16">
-    <label for="exp"><%= @options[:exp_label] %></label>
-    <div class="row">
-      <div class="columns large-12 no-left-padding">
-        <input type="text" data-stripe="exp-month" id="month" placeholder="MM">
-      </div>
-      <div class="columns large-12 no-right-padding">
-        <input type="text" data-stripe="exp-year" id="year" placeholder="YYYY">
-      </div>
+<div id="stripe-payment-fields">
+  <div class="row">
+    <div class="columns large-24">
+      <label for="number"><%= @options[:number_label] %></label>
+      <input type="text" data-stripe="number" id="number">
     </div>
   </div>
-  <div class="columns large-8">
-    <label for="cvc"><%= @options[:cvc_label] %></label>
-    <input type="text" data-stripe="cvc" id="cvc">
+  <div class="row">
+    <div class="columns large-16">
+      <label for="exp"><%= @options[:exp_label] %></label>
+      <div class="row">
+        <div class="columns large-12 no-left-padding">
+          <input type="text" data-stripe="exp-month" id="month" placeholder="MM">
+        </div>
+        <div class="columns large-12 no-right-padding">
+          <input type="text" data-stripe="exp-year" id="year" placeholder="YYYY">
+        </div>
+      </div>
+    </div>
+    <div class="columns large-8">
+      <label for="cvc"><%= @options[:cvc_label] %></label>
+      <input type="text" data-stripe="cvc" id="cvc">
+    </div>
   </div>
 </div>
 <div class="row">

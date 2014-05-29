@@ -7,12 +7,16 @@
   <input type="text" name="stripe_secret" />
 </li>
 <li>
-  <label name="stripe_secret">Stripe Payment Model:</label>
+  <label name="payment_model">Stripe Payment Model:</label>
   <select name="payment_model">
     {{#each content_types}}
     <option value="{{ this.slug  }}">{{ this.name  }}</option>
     {{/each}}
   </select>
+<li>
+  <label name="allow_offline">Allow Offline payments?</label>
+  <input type="checkbox" name="allow_offline" />
+  <p class="inline-hints">Will allow users to coose to pay in person.</p>
 </li>
 <li>
   <label name="stripe_secret">Payment Model 'Id' Field Name:</label>
@@ -33,5 +37,10 @@
   <label name="stripe_secret">Payment Model 'Amount' Field Name:</label>
   <input type="text" name="stripe_amount_field_name" />
   <p class="inline-hints">Default: amount</p>
+</li>
+<li>
+  <label name="stripe_secret">Payment Model Type' Field Name:</label>
+  <input type="text" name="payment_type_field_name" />
+  <p class="inline-hints">Default: payment_type</p>
 </li>
 

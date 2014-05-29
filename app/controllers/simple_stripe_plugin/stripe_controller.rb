@@ -8,7 +8,7 @@ module SimpleStripePlugin
       @response = {}
 
       # Get the transaction details submitted by the form
-      token = params[:stripeToken]
+      type = params[:payment_type] || 'stripe'
       amount = (params[:amount].to_f * 100).to_i
       name = params[:name]
       number = params[:id_number]
@@ -21,6 +21,7 @@ module SimpleStripePlugin
       else
         description = ""
       end
+      token = params[:stripeToken] if type == "stripe"
 
       #Create a model entry if one was passed in
       payment_slug = config[:payment_model]
@@ -48,22 +49,27 @@ module SimpleStripePlugin
       if (create_model && entry.persisted?) || (!create_model && payment_model)
         # Charge the card
         begin
-          charge = Stripe::Charge.create(
-            :amount => amount, # in cents
-            :currency => "cad",
-            :card => token,
-            :description => description,
-          )
+          if type == "stripe"
+            charge = Stripe::Charge.create(
+              :amount => amount, # in cents
+              :currency => "cad",
+              :card => token,
+              :description => description,
+            )
+          else
+            charge = nil
+          end
           #create payment entry
           if payment_slug && payment_model
             attrs = {}
-            attrs[config[:stripe_id_field_name]] = charge.id
+            attrs[config[:stripe_id_field_name]] = charge.id if charge
             attrs[config[:stripe_name_field_name]] = name
             attrs[config[:stripe_number_field_name]] = number
             attrs[config[:stripe_amount_field_name]] = amount.to_f / 100
+            attrs[config[:payment_type_field_name]] = type
 
             payment_entry = payment_model.entries.safe_create(attrs)
-            payment_entry.send("#{has_relation?(payment_model, model)}=".to_sym, entry)
+            payment_entry.send("#{has_relation?(payment_model, model)}=".to_sym, entry) if entry
             unless payment_entry.persisted? && payment_entry.save
               @response[:model] = {error: {message: message(payment_entry)}}
             end
