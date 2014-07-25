@@ -1,0 +1,103 @@
+h1. Simple Strip Plugin
+
+This is a plugin for LocomotiveCMS. It was created to allow LocomotiveCMS designers to add simple online payments through "Stripe":https://stripe.com/
+
+It provides several features that allow it to be used on it own to allow website owner to accept donations or user defined amounts of money (pay invoices, etc.). It can also be used with the form generation plugin to be used as an event registration method.
+
+h2. WARNING
+
+*If this plugin is used you should have SSL on your website. Colibri Software is not responsible for and breach in data. Use at your own risk.*
+
+h2. Installation
+
+To use this plugin you must be using a version of LocomotiveCMS that has the plugins feature designed by "Colibri Software":https://www.colibri-software.com. You can do this by making the followign changes to the Gemfile in you app:
+
+* Remove or comment out the following line:
+@gem 'locomotive_cms', '~> 2.X.X', require: 'locomotive/engine'@
+* Add the following line:
+@gem 'locomotive_cms', require: 'locomotive/engine', git: 'https://github.com/colibri-software/locomotive_engine.git', branch: 'plugins'@
+
+Then add the following lines in your Gemfile to include the plugin:
+<pre><code>group :locomotive_plugins do
+  gem 'simple_stripe_plugin', git: https://github.com/colibri-software/simple_stripe_plugin.git'
+end</code></pre>
+
+h2. Usage
+
+h3. Setup
+
+Before you configure this plugin there is some setup that needs to be done first. This plugin requires that there is a Payments model. This model will record all payments that are made through the website.
+
+This model must have 4 fields. There are configuration options for the field slugs so you can call them what ever you want. The following are the default fields and their types:
+
+* Stripe Payment ID - String - this will store the id recived form stripe for the payment. You can use this to look up specific payments on the Stripe website.
+* Name - String - The name of the payee
+* ID Number - String - This a number that you can use to identify the payment of user (invoice number, membership number)
+* Amount - Float - The amount of the payment
+* Payment Type - Select/String - This is the type of payment. OPtions for select: stripe, offline
+
+h3. Configuring Plugin
+
+This plugin provides many configuration options which are as follows:
+
+* Stripe Public Key - your public key from stripe
+* Strip Private Key - your private key form stripe
+* Strip Payment Model - your payment model
+* Allow offline Payments - whether or not you wish to accept payments in person. Generally used with registration forms.
+* Payment Moded 'ID' Field Name - Stripe Payment Id slug if different form the default
+* Payment Moded 'Name' Field Name - Name slug if different form the default
+* Payment Moded 'ID Number' Field Name - Id Number slug if different form the default
+* Payment Moded 'Amount' Field Name - Amount slug if different form the default
+* Payment Moded 'Type' Field Name - Type slug if different form the default
+
+
+h3. Liquid Tags
+
+This plugin provides several tags that will generate the payment forms for you. They were designed to be used with foundation 24 column and have some options for configuration. If you require more configuration options or do not use foundation you can generate the form manually.
+
+The following is a list of tags and their options(and defaults):
+
+* stripe_javascript - This must be included on the page that has the payment form. It will use the StripeJS to create a card ID so that the card number doesn't actuall touch your server.
+** public_key - override the configured public key
+** form_id - change the default form_id, defualt: payment-form
+** errors_id - id of the error div, default: Payment Successful!
+* stripe_form - This tag will generate the complete payment form. It has limited options for modifications
+**name_label - change the name label, default: Name
+**id_number_label - change the id number label, default: Identification Number
+**amount_label - change the amount label, default: Amount
+**number_label - change the number label, default: Card Number
+**exp_label - change the exp date label, defualt: Experation Date
+**cvc_label - change the CVC label, default: CVC
+**submit_label - change the submit label, default: Submit Payment
+* strip_fields - This tag generates just the fields for the payment form with out the form tags
+** same as stripe_form
+* stripe_form_block - This tag is actually a block that will generate the form tags but no input tags
+** submit_model - registration model to submit to.
+
+Here is an example of the form tag that uses all of the default labels except the id number:
+@{% stripe_form id_number_label: "Invoice Number" %}@
+
+If you use the form_block tag with the fields tag then you can create a payed registration form. To do this you must create another model that will have fields for all of your registration information. It then has to have a has_many relationship with the payments model. There will only ever be one payment per registration but LocomotiveCMS has no has_one relationship. You will then have to create a belongs to relationship on the payment model for the registarion model.
+
+With those models setup you can use the stript tags like so:
+
+<pre><code><div id="registration">
+  {% stripe_form_block submit_model: 'registrations' %}
+    Event:
+    <input type="text" name="content[event]"><br>
+    Name:
+    <input type="text" name="content[name]"><br>
+    <hr>
+    {% stripe_fields name_label: "Name on Card", id_number_label: "Member Number" %}
+  {% endstripe_form_block %}
+</div></code></pre>
+
+If you are also using the form generation plugin you could also do soemthig like this:
+
+<pre><code><div id="registration">
+  {% stripe_form_block submit_model: 'registrations' %}
+    {% model_generator_fields 'registartions' reject_fields: "payment" %}
+    <hr>
+    {% stripe_fields name_label: "Name on Card", id_number_label: "Member Number" %}
+  {% endstripe_form_block %}
+</div></code></pre>

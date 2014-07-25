@@ -15,7 +15,7 @@ module SimpleStripePlugin
     end
 
     def render(context)
-      @options[:public_key] = Engine.config[:stripe_public]
+      @options[:public_key] ||= Engine.config[:stripe_public]
       ERB.new(File.read(File.join(File.dirname(__FILE__), 'javascript.erb'))).result binding
     end
   end
